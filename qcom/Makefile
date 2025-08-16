@@ -85,6 +85,7 @@ VOLCANO_BOARDS += \
 		volcano6i-mtp-wcd9395-moselle-overlay.dtbo \
 		volcano6i-mtp-moselle-wingmate-overlay.dtbo \
 		volcano-qrd-overlay.dtbo \
+		volcano-qrd-pro-overlay.dtbo \
 		volcano6i-qrd-moselle-overlay.dtbo \
 		volcano6i-mtp-STSafe320-brahma-overlay.dtbo
 
