@@ -3,10 +3,6 @@
 #include "asteroids-common-pinctrl.dtsi"
 #include "asteroids-common-pmic.dtsi"
 
-/ {
-	/delete-node/ mem-offline;
-};
-
 &battery_charger {
 	chg_data_id = <6>;
 };
@@ -14,6 +10,10 @@
 &eusb2_phy0 {
 	dummy-supply = <&pmiv0104_eusb2_repeater>;
 	usb-repeater = <&pmiv0104_eusb2_repeater>;
+};
+
+&mem_offline {
+	status = "disabled";
 };
 
 &pm7550_l22 {
