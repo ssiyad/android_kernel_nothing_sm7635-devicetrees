@@ -2,6 +2,7 @@
 
 #include "asteroids-common-pinctrl.dtsi"
 #include "asteroids-common-pmic.dtsi"
+#include "asteroids-common-thermal.dtsi"
 
 &battery_charger {
 	chg_data_id = <6>;
