@@ -277,7 +277,8 @@
 
 	firmware: firmware {
 		qcom_scm: qcom_scm {
-			compatible = "qcom,scm";
+			compatible = "qcom,scm-v1.1", "qcom,scm";
+			interrupts = <GIC_SPI 930 IRQ_TYPE_EDGE_RISING>;
 		};
 	};
 
