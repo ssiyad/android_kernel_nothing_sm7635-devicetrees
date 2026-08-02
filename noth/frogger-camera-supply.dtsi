@@ -1,0 +1,137 @@
+
+&qupv3_se7_i2c {
+	sgm38120:sgm38120@35 {
+		status = "okay";
+		compatible = "nothing,sgm38120";
+		reg =<0x35>;
+		reset-gpios = <&pmr735b_gpios 3 GPIO_ACTIVE_LOW>;
+		irq-gpios = <&tlmm 126 GPIO_ACTIVE_HIGH>;
+		vin12-supply = <&S2B>;
+		vin34-supply = <&BOB>;
+		vin5-supply = <&BOB>;
+		vin6-supply = <&BOB>;
+		vin7-supply = <&BOB>;
+
+		regulators {
+			SGM_LDO1: SGM_LDO1 {
+				regulator-min-microvolt = <1000000>;
+				regulator-max-microvolt = <2048000>;
+				// init-voltage = <1050000>;
+				regulator-name ="SGM_LDO1";
+			};
+			SGM_LDO2: SGM_LDO2 {
+				regulator-min-microvolt = <1000000>;
+				regulator-max-microvolt = <2048000>;
+				// init-voltage = <1100000>;
+				regulator-name = "SGM_LDO2";
+			};
+			SGM_LDO3: SGM_LDO3 {
+				regulator-min-microvolt = <1500000>;
+				regulator-max-microvolt = <2804000>;
+				// init-voltage = <2204000>;
+				regulator-name = "SGM_LDO3";
+			};
+			SGM_LDO4: SGM_LDO4 {
+				regulator-min-microvolt = <1500000>;
+				regulator-max-microvolt = <2804000>;
+				// init-voltage = <1804000>;
+				regulator-name = "SGM_LDO4";
+			};
+			SGM_LDO5: SGM_LDO5 {
+				regulator-min-microvolt = <1500000>;
+				regulator-max-microvolt = <3100000>;
+				// init-voltage = <3100000>;
+				regulator-name = "SGM_LDO5";
+			};
+			SGM_LDO6:SGM_LDO6 {
+				regulator-min-microvolt = <1500000>;
+				regulator-max-microvolt = <3004000>;
+				// init-voltage = <3004000>;
+				regulator-name ="SGM_LDO6";
+			};
+			SGM_LDO7:SGM_LDO7 {
+				regulator-min-microvolt = <1500000>;
+				regulator-max-microvolt = <2804000>;
+				// init-voltage = <2804000>;
+				regulator-name = "SGM_LDO7";
+			};
+		};
+	};
+
+	wr1241:wr1241@28 {
+		status = "okay";
+		compatible = "nothing,wr1241";
+		reg =<0x28>;
+		reset-gpios = <&tlmm 79 GPIO_ACTIVE_HIGH>;
+		vin12-supply = <&S2B>;
+		vin34-supply = <&BOB>;
+
+		regulators {
+			WR_LDO1: WR_LDO1 {
+				regulator-min-microvolt = <600000>;
+				regulator-max-microvolt = <2130000>;
+				// init-voltage = <1050000>;
+				regulator-name ="WR_LDO1";
+			};
+			WR_LDO2: WR_LDO2 {
+				regulator-min-microvolt = <600000>;
+				regulator-max-microvolt = <2130000>;
+				// init-voltage = <2204000>;
+				regulator-name = "WR_LDO2";
+			};
+			WR_LDO3: WR_LDO3 {
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <4387500>;
+				// init-voltage = <2204000>;
+				regulator-name = "WR_LDO3";
+			};
+			WR_LDO4: WR_LDO4 {
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <4387500>;
+				// init-voltage = <3100000>;
+				regulator-name = "WR_LDO4";
+			};
+		};
+	};
+
+};
+
+
+&qupv3_se1_i2c {
+	wr1241_2:wr1241_2@28 {
+		status = "okay";
+		compatible = "nothing,wr1241";
+		reg =<0x28>;
+		reset-gpios = <&tlmm 81 GPIO_ACTIVE_HIGH>;
+		vin12-supply = <&S2B>;
+		vin34-supply = <&BOB>;
+		ldo-type = "UW";
+
+		regulators {
+			WR_LDO1_UW: WR_LDO1_UW {
+				regulator-min-microvolt = <600000>;
+				regulator-max-microvolt = <2130000>;
+				// init-voltage = <1050000>;
+				regulator-name ="WR_LDO1_UW";
+			};
+			WR_LDO2_UW: WR_LDO2_UW {
+				regulator-min-microvolt = <600000>;
+				regulator-max-microvolt = <2130000>;
+				// init-voltage = <2204000>;
+				regulator-name = "WR_LDO2_UW";
+			};
+			WR_LDO3_UW: WR_LDO3_UW {
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <4387500>;
+				// init-voltage = <2204000>;
+				regulator-name = "WR_LDO3_UW";
+			};
+			WR_LDO4_UW: WR_LDO4_UW {
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <4387500>;
+				// init-voltage = <3100000>;
+				regulator-name = "WR_LDO4_UW";
+			};
+		};
+	};
+};
