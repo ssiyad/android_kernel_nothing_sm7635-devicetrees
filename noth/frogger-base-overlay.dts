@@ -1,8 +1,21 @@
 /dts-v1/;
 /plugin/;
 
+#include <dt-bindings/clock/qcom,camcc-volcano.h>
+
 #include "../qcom/volcano-qrd.dtsi"
 #include "frogger-common.dtsi"
+
+/*
+ * Camera. The base volcano.dtb carries no camera block at all, so the platform
+ * half (cam_cci0/1, csiphy, the cam_sensor_* pinctrl) has to come into this
+ * overlay alongside the sensors. A separate camera dtbo could resolve neither
+ * those labels nor the SGM/WR supplies that frogger-common.dtsi brings in.
+ * Stock does the same -- its dtbo entry for this board carries display and
+ * camera together.
+ */
+#include "../qcom/camera/volcano-camera.dtsi"
+#include "frogger-camera-sensor.dtsi"
 
 / {
 	model = "Nothing Phone (4a)";
