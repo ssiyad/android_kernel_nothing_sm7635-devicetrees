@@ -1,26 +1,30 @@
 /dts-v1/;
 /plugin/;
 
-/* Bindings the camera block needs; mirrors qcom/camera/volcano-camera.dts. */
-#include <dt-bindings/clock/qcom,gcc-volcano.h>
-#include <dt-bindings/clock/qcom,camcc-volcano.h>
-#include <dt-bindings/interconnect/qcom,volcano.h>
-#include <dt-bindings/interrupt-controller/arm-gic.h>
-#include <dt-bindings/regulator/qcom,rpmh-regulator-levels.h>
-
 #include "../qcom/volcano-qrd.dtsi"
 #include "frogger-common.dtsi"
 
 /*
- * Camera. The base volcano.dtb carries no camera block at all, so the platform
- * half (cam_cci0/1, csiphy, the cam_sensor_* pinctrl) has to come into this
- * overlay alongside the sensors. A separate camera dtbo could resolve neither
- * those labels nor the SGM/WR supplies that frogger-common.dtsi brings in.
- * Stock does the same -- its dtbo entry for this board carries display and
- * camera together.
+ * Camera is disabled here, and this is deliberate -- do not re-add it without
+ * reading this.
+ *
+ * The camera port pulled the whole platform block (qcom/camera/volcano-camera.dtsi
+ * -- cci, csiphy, icp, bps, smmu, the cam_sensor_* pinctrl) into this overlay,
+ * because the base volcano.dtb carries no camera block and the sensor nodes
+ * could not otherwise resolve &cam_cci0/1. That produced a dtbo the device will
+ * not boot with at all: bisected on hardware against a known-good state, with
+ * only the dtbo changing, our dtbo fails to boot even into recovery while
+ * stock's boots fine.
+ *
+ * Stock's overlay contains sensors only, because its base device tree already
+ * provides the platform block. Duplicating that block in the overlay is
+ * evidently not equivalent -- it most likely collides with, rather than extends,
+ * what the bootloader expects.
+ *
+ * The sensor nodes themselves are untested and may be perfectly fine; they were
+ * never reached. frogger-camera-sensor.dtsi is kept in the tree for when the
+ * platform half is solved properly.
  */
-#include "../qcom/camera/volcano-camera.dtsi"
-#include "frogger-camera-sensor.dtsi"
 
 / {
 	model = "Nothing Phone (4a)";
