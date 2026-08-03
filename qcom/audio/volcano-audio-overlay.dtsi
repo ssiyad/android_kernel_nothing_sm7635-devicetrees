@@ -605,16 +605,13 @@
 	adsp-fw-bit-values = <0x7>;
 };
 
+/*
+ * The smart amplifiers used to be declared here, but they are a board choice,
+ * not a platform one: Asteroids fits NXP TFA98xx and Frogger fits Awinic
+ * AW882xx, both at 0x34/0x35 on this bus. Declaring either here put the wrong
+ * codec into whichever board overlay this file was merged with. Each board now
+ * declares its own in noth/<board>-common.dtsi.
+ */
 &qupv3_se13_i2c {
 	status = "ok";
-	tfa98xx@34 {
-		compatible = "tfa,tfa98xx";
-		reg = <0x34>;
-		reset-gpio = <&tlmm 141 0>;	//AUDIO_REC_PA_RST
-	};
-	tfa98xx@35 {
-		compatible = "tfa,tfa98xx";
-		reg = <0x35>;
-		reset-gpio = <&tlmm 142 0>;	//AUDIO_SPK_PA_RST
-	};
 };

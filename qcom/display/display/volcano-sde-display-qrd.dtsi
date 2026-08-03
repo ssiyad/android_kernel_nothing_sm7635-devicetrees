@@ -177,6 +177,36 @@
 	qcom,platform-reset-gpio = <&tlmm 12 0>;
 };
 
+/*
+ * Frogger's NT37706A, BOE and Visionox variants. Same backlight setup as the
+ * Asteroids panels above but on the Frogger supply, which adds the dvdd_en
+ * rail. Ported from the OEM display-devicetree module.
+ *
+ * The default panel below stays rm69220 -- stock does the same, and the
+ * bootloader selects the actual panel by name at runtime.
+ */
+&dsi_nt37706a_amoled_120hz_vid_vxn {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply_amoled_frogger>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
+	qcom,bl-dsc-cmd-state = "dsi_hs_mode";
+	qcom,mdss-dsi-bl-min-level = <10>;
+	qcom,mdss-dsi-bl-max-level = <4095>;
+	qcom,mdss-brightness-max-level = <4095>;
+	qcom,mdss-dsi-bl-inverted-dbv;
+	qcom,platform-reset-gpio = <&tlmm 12 0>;
+};
+
+&dsi_nt37706a_amoled_120hz_vid_boe {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply_amoled_frogger>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
+	qcom,bl-dsc-cmd-state = "dsi_hs_mode";
+	qcom,mdss-dsi-bl-min-level = <10>;
+	qcom,mdss-dsi-bl-max-level = <4095>;
+	qcom,mdss-brightness-max-level = <4095>;
+	qcom,mdss-dsi-bl-inverted-dbv;
+	qcom,platform-reset-gpio = <&tlmm 12 0>;
+};
+
 &sde_dsi {
 	qcom,dsi-default-panel = <&dsi_rm69220_amoled_120hz_vid_vxn>;
 };
@@ -185,6 +215,8 @@
 	focaltech@0 {
 		panel = <&dsi_rm69220_amoled_120hz_vid_boe
 			&dsi_rm69220_amoled_120hz_vid_vxn
+			&dsi_nt37706a_amoled_120hz_vid_vxn
+			&dsi_nt37706a_amoled_120hz_vid_boe
 			&dsi_vtdr6130_amoled_cmd
 			&dsi_vtdr6130_amoled_video
 			&dsi_vtdr6130_amoled_120hz_cmd
@@ -201,6 +233,8 @@
 &soc {
 	goodix_fp {
 		panel = <&dsi_rm69220_amoled_120hz_vid_vxn
-			&dsi_rm69220_amoled_120hz_vid_boe>;
+			&dsi_rm69220_amoled_120hz_vid_boe
+			&dsi_nt37706a_amoled_120hz_vid_boe
+			&dsi_nt37706a_amoled_120hz_vid_vxn>;
 	};
 };

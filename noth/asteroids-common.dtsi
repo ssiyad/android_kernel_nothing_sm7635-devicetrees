@@ -271,3 +271,22 @@
 		maximum-speed = "high-speed";
 	};
 };
+
+/*
+ * NXP TFA98xx smart amplifiers. Moved here from
+ * qcom/audio/volcano-audio-overlay.dtsi, which is shared with Frogger -- that
+ * board fits Awinic AW882xx at the same addresses, so declaring either in the
+ * shared platform file put the wrong codec into the other board's overlay.
+ */
+&qupv3_se13_i2c {
+	tfa98xx@34 {
+		compatible = "tfa,tfa98xx";
+		reg = <0x34>;
+		reset-gpio = <&tlmm 141 0>;	//AUDIO_REC_PA_RST
+	};
+	tfa98xx@35 {
+		compatible = "tfa,tfa98xx";
+		reg = <0x35>;
+		reset-gpio = <&tlmm 142 0>;	//AUDIO_SPK_PA_RST
+	};
+};

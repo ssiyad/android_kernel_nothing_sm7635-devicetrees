@@ -269,3 +269,41 @@
 		snps,usb2-lpm-disable;
 	};
 };
+
+/*
+ * Awinic AW882xx smart amplifiers, ported from the OEM audio-devicetree module
+ * (Frogger/volcano-audio-overlay.dtsi) which this tree does not carry.
+ *
+ * Frogger fits these where Asteroids fits NXP TFA98xx, at the same 0x34/0x35
+ * on this bus. Without them the aw882xx driver never probes, and the
+ * pri_mi2s dailink -- which points at aw882xx_smartpa.13-0034/0035 -- has no
+ * codec to bind to, so the sound card fails to register.
+ *
+ * sound-channel: 0 = primary left, 1 = primary right.
+ */
+&qupv3_se13_i2c {
+	aw882xx_smartpa@34 {
+		compatible = "awinic,aw882xx_smartpa";
+		reg = <0x34>;
+		reset-gpio = <&tlmm 141 0>;	//AUDIO_REC_PA_RST
+		sync-load = <1>;
+		sound-channel = <0>;
+		aw-re-min = <4000>;
+		aw-re-max = <30000>;
+		aw-cali-mode = "none";
+		monitor-mode = "hal_monitor";
+		status = "okay";
+	};
+	aw882xx_smartpa@35 {
+		compatible = "awinic,aw882xx_smartpa";
+		reg = <0x35>;
+		reset-gpio = <&tlmm 142 0>;	//AUDIO_SPK_PA_RST
+		sync-load = <1>;
+		sound-channel = <1>;
+		aw-re-min = <4000>;
+		aw-re-max = <30000>;
+		aw-cali-mode = "none";
+		monitor-mode = "hal_monitor";
+		status = "okay";
+	};
+};
