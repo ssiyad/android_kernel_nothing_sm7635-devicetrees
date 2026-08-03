@@ -1,7 +1,12 @@
 /dts-v1/;
 /plugin/;
 
+/* Bindings the camera block needs; mirrors qcom/camera/volcano-camera.dts. */
+#include <dt-bindings/clock/qcom,gcc-volcano.h>
 #include <dt-bindings/clock/qcom,camcc-volcano.h>
+#include <dt-bindings/interconnect/qcom,volcano.h>
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/regulator/qcom,rpmh-regulator-levels.h>
 
 #include "../qcom/volcano-qrd.dtsi"
 #include "frogger-common.dtsi"
