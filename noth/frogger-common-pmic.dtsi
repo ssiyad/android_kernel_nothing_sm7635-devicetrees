@@ -121,24 +121,27 @@
 	/delete-node/ sys-therm-7;
 	/delete-node/ sys-therm-10;
 
-	ap_ntc {
-		polling-delay-passive = <0>;
-		polling-delay = <0>;
-		thermal-sensors = <&pmk8550_vadc PMXR2230_ADC5_GEN3_AMUX_THM2_100K_PU>;
-		trips {
-			active-config0 {
-				temperature = <125000>;
-				hysteresis = <1000>;
-				type = "passive";
-			};
-
-			active-config1 {
-				temperature = <125000>;
-				hysteresis = <1000>;
-				type = "passive";
-			};
-		};
-	};
+	/*
+	 * Those /delete-node/ lines do nothing. This is a /plugin/ overlay and an
+	 * overlay cannot delete a node from the base DTB, so every sys-therm-* it
+	 * names survives in volcano.dtb regardless.
+	 *
+	 * Eight friendlier-named zones used to be defined below to replace them --
+	 * ap_ntc, cam_ntc, gsmpa_ntc, ltepa_ntc, nrpa_ntc, sc_buck_ntc, usb_port_ntc
+	 * and wifi_ntc, one for each /delete-node/ above. Each was a byte-for-byte
+	 * copy of the base zone it shadowed, differing only in name, and each
+	 * claimed an ADC channel a surviving base zone already owned, so none of
+	 * them ever registered. They were pure dead weight.
+	 *
+	 * nrpa_ntc was worse than dead: it redefined display_test_config1..4, so
+	 * the base sys-therm-5's own cooling-maps resolved to trips inside the
+	 * copy. Trips must belong to the zone that maps them, so every bind failed
+	 * and thermal_zone47 logged -ENXIO against each cooling device, 36 times a
+	 * boot.
+	 *
+	 * All eight are gone. The zones that remain below claim channels no base
+	 * zone touches, which is why they are the ones that actually register.
+	 */
 
 	battery {
 		polling-delay-passive = <0>;
@@ -179,25 +182,6 @@
 		};
 	};
 
-	cam_ntc {
-		polling-delay-passive = <0>;
-		polling-delay = <0>;
-		thermal-sensors = <&pmk8550_vadc PMXR2230_ADC5_GEN3_AMUX3_GPIO7_100K_PU>;
-		trips {
-			active-config0 {
-				temperature = <125000>;
-				hysteresis = <1000>;
-				type = "passive";
-			};
-
-			active-config1 {
-				temperature = <125000>;
-				hysteresis = <1000>;
-				type = "passive";
-			};
-		};
-	};
-
 	flash_light_ntc {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
@@ -218,101 +202,10 @@
 		};
 	};
 
-	gsmpa_ntc {
-		polling-delay-passive = <0>;
-		polling-delay = <0>;
-		thermal-sensors = <&pmk8550_vadc PMXR2230_ADC5_GEN3_AMUX_THM1_100K_PU>;
-		trips {
-			active-config0 {
-				temperature = <125000>;
-				hysteresis = <1000>;
-				type = "passive";
-			};
-
-			active-config1 {
-				temperature = <125000>;
-				hysteresis = <1000>;
-				type = "passive";
-			};
-		};
-	};
-
-	ltepa_ntc {
-		polling-delay-passive = <0>;
-		polling-delay = <0>;
-		thermal-sensors = <&pmk8550_vadc PMXR2230_ADC5_GEN3_AMUX_THM5_100K_PU>;
-		trips {
-			active-config0 {
-				temperature = <125000>;
-				hysteresis = <1000>;
-				type = "passive";
-			};
-
-			active-config1 {
-				temperature = <125000>;
-				hysteresis = <1000>;
-				type = "passive";
-			};
-		};
-	};
-
-	/*
-	 * nrpa_ntc used to be redefined here: a byte-for-byte copy of the base
-	 * sys-therm-5 under a friendlier name. This is a /plugin/ overlay, so the
-	 * /delete-node/ above never removed the base zone -- overlays cannot
-	 * delete base nodes -- and both ended up registered against the same ADC
-	 * channel. Worse, redefining display_test_config1..4 here stole those
-	 * labels, so the base zone's own cooling-maps pointed at trips belonging
-	 * to this copy. Cross-zone trip references cannot bind, and thermal_zone47
-	 * logged -ENXIO against every cooling device on every boot.
-	 *
-	 * The base zone is correct and complete on its own, so the copy is gone.
-	 */
-
-	sc_buck_ntc {
-		polling-delay-passive = <0>;
-		polling-delay = <0>;
-		thermal-governor = "user_space";
-		thermal-sensors = <&pmk8550_vadc PMIV0104_ADC5_GEN3_AMUX_THM6_GPIO6_100K_PU>;
-		trips {
-			active-config0 {
-				temperature = <125000>;
-				hysteresis = <1000>;
-				type = "passive";
-			};
-
-			active-config1 {
-				temperature = <125000>;
-				hysteresis = <1000>;
-				type = "passive";
-			};
-		};
-	};
-
 	uhbpa_ntc {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-sensors = <&pmk8550_vadc PMXR2230_ADC5_GEN3_AMUX4_GPIO10_100K_PU>;
-		trips {
-			active-config0 {
-				temperature = <125000>;
-				hysteresis = <1000>;
-				type = "passive";
-			};
-
-			active-config1 {
-				temperature = <125000>;
-				hysteresis = <1000>;
-				type = "passive";
-			};
-		};
-	};
-
-	usb_port_ntc {
-		polling-delay-passive = <0>;
-		polling-delay = <0>;
-		thermal-governor = "user_space";
-		thermal-sensors = <&pmk8550_vadc PMIV0104_ADC5_GEN3_AMUX_THM4_USB_THERM_100K_PU>;
 		trips {
 			active-config0 {
 				temperature = <125000>;
@@ -348,24 +241,6 @@
 		};
 	};
 
-	wifi_ntc {
-		polling-delay-passive = <0>;
-		polling-delay = <0>;
-		thermal-sensors = <&pmk8550_vadc PMXR2230_ADC5_GEN3_AMUX_THM4_100K_PU>;
-		trips {
-			active-config0 {
-				temperature = <125000>;
-				hysteresis = <1000>;
-				type = "passive";
-			};
-
-			active-config1 {
-				temperature = <125000>;
-				hysteresis = <1000>;
-				type = "passive";
-			};
-		};
-	};
 };
 
 &tlmm {
