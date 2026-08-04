@@ -20,7 +20,7 @@
  *
  * Every other label frogger-camera-sensor.dtsi needs is already satisfied: it
  * defines its own eleven peripherals (eeprom_*, actuator_*, led_flash_*,
- * camera3_ois_*), and the thirteen SGM_LDO*/WR_LDO* supplies come from
+ * camera3_ois_*), and the thirteen SGM_LDO and WR_LDO supplies come from
  * frogger-camera-supply.dtsi, which frogger-common.dtsi already includes above.
  *
  * Camera was disabled in 95d70251 on a bisect that showed our dtbo would not
