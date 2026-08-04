@@ -17,13 +17,21 @@
  * Stock ships this same node set for both board-ids and the sensor simply fails
  * to probe when absent, so it is kept rather than stripped.
  *
- * The SGM_LDO* / WR_LDO* supplies come from frogger-camera-supply.dtsi, and
- * cam_cci0/1 plus the cam_sensor_* pinctrl from qcom/camera/volcano-camera.dtsi.
- * Both are pulled into this same overlay by frogger-base-overlay.dts -- they
- * cannot live in a separate dtbo, because the base volcano.dtb carries no
- * camera block at all and the labels would not resolve.
+ * The SGM_LDO* / WR_LDO* supplies come from frogger-camera-supply.dtsi, which
+ * frogger-common.dtsi already includes into this overlay.
+ *
+ * cam_cci0/1, the cam_sensor_* pinctrl, camcc and the pmxr2230 flash labels are
+ * NOT defined here and must not be. They come from the merged base, which is
+ * volcano.dtb plus its platform dtbos, and resolve through __fixups__ at overlay
+ * application -- see the comment in frogger-base-overlay.dts.
+ *
+ * camcc-volcano.h is needed for the CAM_CC_MCLK*_CLK clock ids. It arrives via
+ * volcano.dtsi in a normal build, but this overlay includes volcano-qrd.dtsi,
+ * which does not pull volcano.dtsi in, so it has to be included directly. QCOM's
+ * own standalone camera .dts files do the same thing for the same reason.
  */
 
+#include <dt-bindings/clock/qcom,camcc-volcano.h>
 #include <dt-bindings/msm-camera.h>
 
 &soc {
