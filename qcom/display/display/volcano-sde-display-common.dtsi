@@ -300,6 +300,79 @@
 	};
 };
 
+/*
+ * Frogger's NT37706A. These blocks are what supply qcom,display-topology --
+ * without them dsi_panel_parse_topology() fails with -EINVAL, dsi_panel_get_mode()
+ * returns no mode, and the caller dereferences NULL and panics before first boot.
+ * The panel .dtsi files alone are not enough; the topology lives here.
+ */
+
+&dsi_nt37706a_amoled_120hz_vid_vxn {
+	qcom,dsi-select-clocks = "pll_byte_clk0", "pll_dsi_clk0";
+
+	qcom,dsi-supported-dfps-list = <120 90 60 30>;
+	qcom,mdss-dsi-pan-enable-dynamic-fps;
+	qcom,mdss-dsi-pan-fps-update = "dfps_immediate_porch_mode_both_hv_porch";
+	qcom,dsi-dfps-hfp-list = <41 41 41 1241>;
+	qcom,dsi-dfps-hbp-list = <16 16 16 16>;
+	qcom,dsi-dfps-hpw-list = <16 16 16 16>;
+	qcom,dsi-dfps-vbp-list = <46 46 46 46>;
+	qcom,dsi-dfps-vfp-list = <76 1024 2920 76>;
+	qcom,dsi-dfps-vpw-list = <2 2 2 2>;
+
+	qcom,esd-check-enabled;
+	qcom,mdss-dsi-panel-status-check-mode = "reg_read";
+	qcom,mdss-dsi-panel-status-command = [06 01 00 01 00 00 01 0a];
+	qcom,mdss-dsi-panel-status-command-state = "dsi_lp_mode";
+	qcom,mdss-dsi-panel-status-value = <0x9c>;
+	qcom,mdss-dsi-panel-status-read-length = <1>;
+	qcom,mdss-dsi-panel-version = <2511101>;
+
+	qcom,mdss-dsi-panel-hdr-enabled;
+
+	qcom,mdss-dsi-display-timings {
+		timing@0 {
+			qcom,mdss-dsi-panel-phy-timings = [00 22 09 09 19 17 09
+				09 09 02 04 00 1D 0E];
+			qcom,display-topology = <1 1 1>;
+			qcom,default-topology-index = <0>;
+		};
+	};
+};
+
+&dsi_nt37706a_amoled_120hz_vid_boe {
+	qcom,dsi-select-clocks = "pll_byte_clk0", "pll_dsi_clk0";
+
+	qcom,dsi-supported-dfps-list = <120 90 60 30>;
+	qcom,mdss-dsi-pan-enable-dynamic-fps;
+	qcom,mdss-dsi-pan-fps-update = "dfps_immediate_porch_mode_both_hv_porch";
+	qcom,dsi-dfps-hfp-list = <41 41 41 1241>;
+	qcom,dsi-dfps-hbp-list = <16 16 16 16>;
+	qcom,dsi-dfps-hpw-list = <16 16 16 16>;
+	qcom,dsi-dfps-vbp-list = <46 46 46 46>;
+	qcom,dsi-dfps-vfp-list = <76 1024 2920 76>;
+	qcom,dsi-dfps-vpw-list = <2 2 2 2>;
+
+	qcom,esd-check-enabled;
+	qcom,mdss-dsi-panel-status-check-mode = "reg_read";
+	qcom,mdss-dsi-panel-status-command = [06 01 00 01 00 00 01 0a];
+	qcom,mdss-dsi-panel-status-command-state = "dsi_lp_mode";
+	qcom,mdss-dsi-panel-status-value = <0x9c>;
+	qcom,mdss-dsi-panel-status-read-length = <1>;
+	qcom,mdss-dsi-panel-version = <2511102>;
+
+	qcom,mdss-dsi-panel-hdr-enabled;
+
+	qcom,mdss-dsi-display-timings {
+		timing@0 {
+			qcom,mdss-dsi-panel-phy-timings = [00 22 09 09 19 17 09
+				09 09 02 04 00 1D 0E];
+			qcom,display-topology = <1 1 1>;
+			qcom,default-topology-index = <0>;
+		};
+	};
+};
+
 &dsi_rm69220_amoled_120hz_vid_vxn {
 	qcom,dsi-select-clocks = "pll_byte_clk0", "pll_dsi_clk0";
 
