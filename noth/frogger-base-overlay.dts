@@ -3,27 +3,29 @@
 
 #include "../qcom/volcano-qrd.dtsi"
 #include "frogger-common.dtsi"
+#include "frogger-camera-sensor.dtsi"
 
 /*
- * Camera is disabled here, and this is deliberate -- do not re-add it without
- * reading this.
+ * Sensors only, deliberately -- do NOT add qcom/camera/volcano-camera.dtsi here.
  *
- * The camera port pulled the whole platform block (qcom/camera/volcano-camera.dtsi
- * -- cci, csiphy, icp, bps, smmu, the cam_sensor_* pinctrl) into this overlay,
- * because the base volcano.dtb carries no camera block and the sensor nodes
- * could not otherwise resolve &cam_cci0/1. That produced a dtbo the device will
- * not boot with at all: bisected on hardware against a known-good state, with
- * only the dtbo changing, our dtbo fails to boot even into recovery while
- * stock's boots fine.
+ * The original port pulled that whole platform block (cci, csiphy, icp, bps,
+ * smmu, the cam_sensor_* pinctrl) into this overlay on the belief that the base
+ * volcano.dtb carries no camera block, leaving &cam_cci0/1 unresolvable. That is
+ * not true. The merge script builds the base as volcano.dtb plus its platform
+ * dtbos -- volcano-camera.dtbo and volcano-camera-qrd.dtbo among them -- and the
+ * result exports cam_cci0, cam_cci1, cam_csiphy0-3, camcc,
+ * cam_cc_camss_top_gdsc, all twelve cam_sensor_* pinctrl entries and the
+ * pmxr2230 flash/torch/switch labels in __symbols__. An overlay resolves them
+ * through __fixups__, exactly as stock's sensors-only overlay does.
  *
- * Stock's overlay contains sensors only, because its base device tree already
- * provides the platform block. Duplicating that block in the overlay is
- * evidently not equivalent -- it most likely collides with, rather than extends,
- * what the bootloader expects.
+ * Every other label frogger-camera-sensor.dtsi needs is already satisfied: it
+ * defines its own eleven peripherals (eeprom_*, actuator_*, led_flash_*,
+ * camera3_ois_*), and the thirteen SGM_LDO*/WR_LDO* supplies come from
+ * frogger-camera-supply.dtsi, which frogger-common.dtsi already includes above.
  *
- * The sensor nodes themselves are untested and may be perfectly fine; they were
- * never reached. frogger-camera-sensor.dtsi is kept in the tree for when the
- * platform half is solved properly.
+ * Camera was disabled in 95d70251 on a bisect that showed our dtbo would not
+ * boot. The bisect was right that the dtbo was at fault and wrong about which
+ * part: the actual defect was the missing panel topology, fixed in ed86e855.
  */
 
 / {
