@@ -292,14 +292,35 @@
 		aw-re-max = <30000>;
 		aw-cali-mode = "none";
 		/*
-		 * kernel_monitor, not stock's hal_monitor. hal_monitor waits for the
-		 * audio HAL to drive monitoring through the aw882xx_hal_monitor_time
-		 * kcontrol, and stock's libar-pal.so is what does that -- it is the
-		 * only file in the stock image referencing aw882xx_cali. We build PAL
-		 * from hardware/qcom-caf/sm8650/audio/pal, which has no Awinic code,
-		 * so nothing ever enabled it: monitor enable 0, algo_state unreadable,
-		 * dsp_re 0. AW_MON_KERNEL_MODE makes the driver run its own loop
-		 * instead (aw882xx_monitor.c parses this at :1395).
+		 * kernel_monitor, not stock's hal_monitor -- but be aware that NEITHER
+		 * works, and this property is not what decides it.
+		 *
+		 * hal_monitor waits for the audio HAL to drive monitoring through the
+		 * aw882xx_hal_monitor_time kcontrol. Stock's libar-pal.so does that; it
+		 * is the only file in the stock image referencing aw882xx_cali. We
+		 * build PAL from hardware/qcom-caf/sm8650/audio/pal, which has no
+		 * Awinic code, so nothing ever drove it.
+		 *
+		 * kernel_monitor was meant to make the driver run its own loop instead.
+		 * Verified on device 2026-08-05: the property is read correctly
+		 * (AW_MON_KERNEL_MODE) and monitoring still does not start -- monitor
+		 * enable 0, dsp_re 0, algo_state unreadable, exactly as before.
+		 *
+		 * aw882xx_monitor_start() needs monitor_cfg->monitor_status ==
+		 * AW_MON_CFG_OK, and monitor_cfg is populated only by a sysfs write to
+		 * monitor_update (aw882xx_monitor.c:1350), which loads a separate
+		 * per-chip firmware file:
+		 *
+		 *     AW_PID_2329_MONITOR_FILE = "aw882xx_pid_2329_monitor.bin"
+		 *
+		 * That file is not in /vendor/firmware, not in our extracted blobs, and
+		 * not in stock -- so monitor_status stays 0 permanently. The shipped
+		 * aw882xx_acf.bin is Awinic's reference tuning (project A1901, chip
+		 * aw88271 against a detected 0x2329) and carries register profiles
+		 * only, with no vcalb constant.
+		 *
+		 * Kept at kernel_monitor because hal_monitor waits on a HAL that does
+		 * not exist either. Changing this property will not fix anything.
 		 *
 		 * Factory calibration is already present at
 		 * /mnt/vendor/persist/audio/aw_cali.bin, which is the path the driver
@@ -321,14 +342,35 @@
 		aw-re-max = <30000>;
 		aw-cali-mode = "none";
 		/*
-		 * kernel_monitor, not stock's hal_monitor. hal_monitor waits for the
-		 * audio HAL to drive monitoring through the aw882xx_hal_monitor_time
-		 * kcontrol, and stock's libar-pal.so is what does that -- it is the
-		 * only file in the stock image referencing aw882xx_cali. We build PAL
-		 * from hardware/qcom-caf/sm8650/audio/pal, which has no Awinic code,
-		 * so nothing ever enabled it: monitor enable 0, algo_state unreadable,
-		 * dsp_re 0. AW_MON_KERNEL_MODE makes the driver run its own loop
-		 * instead (aw882xx_monitor.c parses this at :1395).
+		 * kernel_monitor, not stock's hal_monitor -- but be aware that NEITHER
+		 * works, and this property is not what decides it.
+		 *
+		 * hal_monitor waits for the audio HAL to drive monitoring through the
+		 * aw882xx_hal_monitor_time kcontrol. Stock's libar-pal.so does that; it
+		 * is the only file in the stock image referencing aw882xx_cali. We
+		 * build PAL from hardware/qcom-caf/sm8650/audio/pal, which has no
+		 * Awinic code, so nothing ever drove it.
+		 *
+		 * kernel_monitor was meant to make the driver run its own loop instead.
+		 * Verified on device 2026-08-05: the property is read correctly
+		 * (AW_MON_KERNEL_MODE) and monitoring still does not start -- monitor
+		 * enable 0, dsp_re 0, algo_state unreadable, exactly as before.
+		 *
+		 * aw882xx_monitor_start() needs monitor_cfg->monitor_status ==
+		 * AW_MON_CFG_OK, and monitor_cfg is populated only by a sysfs write to
+		 * monitor_update (aw882xx_monitor.c:1350), which loads a separate
+		 * per-chip firmware file:
+		 *
+		 *     AW_PID_2329_MONITOR_FILE = "aw882xx_pid_2329_monitor.bin"
+		 *
+		 * That file is not in /vendor/firmware, not in our extracted blobs, and
+		 * not in stock -- so monitor_status stays 0 permanently. The shipped
+		 * aw882xx_acf.bin is Awinic's reference tuning (project A1901, chip
+		 * aw88271 against a detected 0x2329) and carries register profiles
+		 * only, with no vcalb constant.
+		 *
+		 * Kept at kernel_monitor because hal_monitor waits on a HAL that does
+		 * not exist either. Changing this property will not fix anything.
 		 *
 		 * Factory calibration is already present at
 		 * /mnt/vendor/persist/audio/aw_cali.bin, which is the path the driver
