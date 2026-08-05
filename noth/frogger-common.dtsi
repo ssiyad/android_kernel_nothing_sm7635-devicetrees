@@ -291,7 +291,24 @@
 		aw-re-min = <4000>;
 		aw-re-max = <30000>;
 		aw-cali-mode = "none";
-		monitor-mode = "hal_monitor";
+		/*
+		 * kernel_monitor, not stock's hal_monitor. hal_monitor waits for the
+		 * audio HAL to drive monitoring through the aw882xx_hal_monitor_time
+		 * kcontrol, and stock's libar-pal.so is what does that -- it is the
+		 * only file in the stock image referencing aw882xx_cali. We build PAL
+		 * from hardware/qcom-caf/sm8650/audio/pal, which has no Awinic code,
+		 * so nothing ever enabled it: monitor enable 0, algo_state unreadable,
+		 * dsp_re 0. AW_MON_KERNEL_MODE makes the driver run its own loop
+		 * instead (aw882xx_monitor.c parses this at :1395).
+		 *
+		 * Factory calibration is already present at
+		 * /mnt/vendor/persist/audio/aw_cali.bin, which is the path the driver
+		 * reads, so no calibration run is needed -- and must not be done
+		 * casually, since aw882xx_cali's cali verb overwrites that file.
+		 *
+		 * See docs/audio.md.
+		 */
+		monitor-mode = "kernel_monitor";
 		status = "okay";
 	};
 	aw882xx_smartpa@35 {
@@ -303,7 +320,24 @@
 		aw-re-min = <4000>;
 		aw-re-max = <30000>;
 		aw-cali-mode = "none";
-		monitor-mode = "hal_monitor";
+		/*
+		 * kernel_monitor, not stock's hal_monitor. hal_monitor waits for the
+		 * audio HAL to drive monitoring through the aw882xx_hal_monitor_time
+		 * kcontrol, and stock's libar-pal.so is what does that -- it is the
+		 * only file in the stock image referencing aw882xx_cali. We build PAL
+		 * from hardware/qcom-caf/sm8650/audio/pal, which has no Awinic code,
+		 * so nothing ever enabled it: monitor enable 0, algo_state unreadable,
+		 * dsp_re 0. AW_MON_KERNEL_MODE makes the driver run its own loop
+		 * instead (aw882xx_monitor.c parses this at :1395).
+		 *
+		 * Factory calibration is already present at
+		 * /mnt/vendor/persist/audio/aw_cali.bin, which is the path the driver
+		 * reads, so no calibration run is needed -- and must not be done
+		 * casually, since aw882xx_cali's cali verb overwrites that file.
+		 *
+		 * See docs/audio.md.
+		 */
+		monitor-mode = "kernel_monitor";
 		status = "okay";
 	};
 };
