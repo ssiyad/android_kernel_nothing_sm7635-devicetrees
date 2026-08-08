@@ -310,7 +310,17 @@
 &dsi_nt37706a_amoled_120hz_vid_vxn {
 	qcom,dsi-select-clocks = "pll_byte_clk0", "pll_dsi_clk0";
 
-	qcom,dsi-supported-dfps-list = <120 90 60 30>;
+	/*
+	 * 30Hz removed for the same reason as the BOE variant below, which see
+	 * for the full arithmetic. This is the same panel IC from a different
+	 * vendor and carries byte-identical porch lists, so its 30Hz entry has
+	 * the same halved pixel clock (213,044,040 against 442,640,160) and the
+	 * same non-seamless transition.
+	 *
+	 * Untested here -- this unit has the BOE panel. Fixed anyway so a
+	 * Visionox unit does not hit a flicker we have already diagnosed.
+	 */
+	qcom,dsi-supported-dfps-list = <120 90 60>;
 	qcom,mdss-dsi-pan-enable-dynamic-fps;
 	qcom,mdss-dsi-pan-fps-update = "dfps_immediate_porch_mode_both_hv_porch";
 	qcom,dsi-dfps-hfp-list = <41 41 41 1241>;
@@ -343,7 +353,40 @@
 &dsi_nt37706a_amoled_120hz_vid_boe {
 	qcom,dsi-select-clocks = "pll_byte_clk0", "pll_dsi_clk0";
 
-	qcom,dsi-supported-dfps-list = <120 90 60 30>;
+	/*
+	 * 30Hz removed: its transition is NOT seamless, and it was the cause of
+	 * the random screen flicker.
+	 *
+	 * This panel has a single timing and changes rate by adjusting porches,
+	 * which is only seamless while the pixel clock stays constant. With
+	 * hactive 1224, vactive 2720 and the porch lists below:
+	 *
+	 *   rate  htotal  vtotal   pixel clock
+	 *    120   1297    2844    442,640,160
+	 *     90   1297    3792    442,640,160
+	 *     60   1297    5688    442,640,160
+	 *     30   2497    2844    213,044,040   <- 48% of the others
+	 *
+	 * 120/90/60 stretch the VERTICAL front porch (76 -> 1024 -> 2920) and
+	 * hold the clock exactly. The 30Hz entry instead leaves vfp at the 120Hz
+	 * value and inflates the HORIZONTAL porch to 1241, halving the pixel
+	 * clock and forcing a DSI PLL reprogram: a visible glitch. A seamless
+	 * 30Hz would need vfp = 8608, almost certainly past the controller limit,
+	 * which is likely why the horizontal trick was used.
+	 *
+	 * Stock ships these exact porch values, so this is not a porting error.
+	 * Stock does not flicker because its framework never selects 30Hz, and
+	 * that policy lives in nt-services.jar which LineageOS does not ship, so
+	 * AOSP's refresh-rate policy uses 30Hz freely. Confirmed on device:
+	 * min_refresh_rate=60 stopped the flicker; pinning 120Hz had too.
+	 *
+	 * The porch lists keep their fourth entry. The driver reads only
+	 * dfps_list_len entries from each (dsi_panel.c:1589), so the 30Hz values
+	 * are inert but preserved for reference.
+	 *
+	 * DO NOT re-add 30 without first making its pixel clock match the others.
+	 */
+	qcom,dsi-supported-dfps-list = <120 90 60>;
 	qcom,mdss-dsi-pan-enable-dynamic-fps;
 	qcom,mdss-dsi-pan-fps-update = "dfps_immediate_porch_mode_both_hv_porch";
 	qcom,dsi-dfps-hfp-list = <41 41 41 1241>;
