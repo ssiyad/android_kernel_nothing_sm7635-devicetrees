@@ -257,3 +257,17 @@
 	};
 };
 
+
+/*
+ * The shared base lists only qupv3_se7_i2c here, and its own comment states the
+ * rule: every QUP that parents a PMIC has to be a GCC critical device, or the
+ * clock can be gated while that device still needs it. Frogger hangs the
+ * wr1241 camera regulator IC off qupv3_se1_i2c, so se1 qualifies too. The OEM's
+ * own Frogger overlay lists both.
+ *
+ * Overridden here rather than in qcom/ because the base is shared: Asteroids
+ * puts different hardware on se1.
+ */
+&gcc {
+	qcom,critical-devices = <&qupv3_se7_i2c &qupv3_se1_i2c>;
+};
