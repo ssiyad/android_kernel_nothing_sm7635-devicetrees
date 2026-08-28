@@ -136,8 +136,23 @@
 		compatible = "ramoops";
 		reg = <0x0 0x81f20000 0x0 0x400000>;
 		size = <0x400000>;
+		/*
+		 * record-size is what pstore cuts the dmesg zone into, and
+		 * without it there is no dmesg zone at all: a panic writes
+		 * nothing, and /sys/fs/pstore comes back holding only pmsg.
+		 * The zone is whatever console and pmsg leave behind, so the
+		 * 2 + 2 that filled this carveout exactly had to give up a
+		 * megabyte for one to exist.
+		 *
+		 * Taken from pmsg rather than console. Console is the previous
+		 * boot's kernel log, which is what a boot failure is read from;
+		 * pmsg is the userspace ring buffer, and 1 MB still covers it.
+		 * 1 MB of dmesg zone is eight records, and pstore.kmsg_bytes
+		 * caps what each one keeps at 10 KB anyway.
+		 */
+		record-size = <0x20000>;
 		console-size = <0x200000>;
-		pmsg-size = <0x200000>;
+		pmsg-size = <0x100000>;
 		mem-type = <2>;
 		linux,reserve-contiguous-region;
 		linux,reserve-region;
