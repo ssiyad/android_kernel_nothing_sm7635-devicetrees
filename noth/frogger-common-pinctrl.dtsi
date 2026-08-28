@@ -21,3 +21,24 @@
 		output-high;
 	};
 };
+
+/*
+ * BELL-5845: audio pop. gpio17 is i2s0_data1, and the shared base leaves it
+ * with no pull in its active state, so the line floats between the codec
+ * releasing it and the amplifier being muted. The OEM's Frogger pinctrl pulls
+ * it down; the generic one it was branched from does not.
+ *
+ * Overridden here rather than in qcom/, because that file is the shared base
+ * and Asteroids drives different hardware off the same pin group.
+ *
+ * The delete is belt and braces. pinconf-generic walks dt_params[] in order and
+ * bias-disable sits ahead of bias-pull-down, so the pull-down is applied second
+ * and wins even where the property survives -- but leaving both present in one
+ * config node reads as a contradiction to anyone who finds it later.
+ */
+&i2s0_sd1_active {
+	config {
+		/delete-property/ bias-disable;
+		bias-pull-down;
+	};
+};
